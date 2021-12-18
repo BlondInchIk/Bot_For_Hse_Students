@@ -11,7 +11,7 @@ FIO = ''
 
 @bot.message_handler(commands = ["start"])
 def start(message):
-    '''Используется для начала работы telegram bot'a и запсука вступительного текста'''
+    '''Используется для начала работы telegram bot'a и запуска вступительного текста'''
     user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
     user_markup.row("/add","/delete")
     user_markup.row("/play","/show")
@@ -43,7 +43,7 @@ def delete2(message):
 @bot.message_handler(commands = ["show"])
 def output_(message):
     '''Реализует вывод рассписания определенного пользователя'''
-    bot.send_message(message.from_user.id, rasp_cool(output(message.from_user.id)[0]))
+    bot.send_message(message.from_user.id, rasp_cool(output(message.from_user.id)))
 
 @bot.message_handler(commands = ["location"])
 def output_(message):
@@ -118,8 +118,8 @@ def anonymous(message):
     bot.send_message(message.chat.id, all)
 
 @bot.message_handler(commands=['play'])
-'''Запускает игру - лабиринт'''
 def play_message(message):
+    '''Запускает игру - лабиринт'''
     bot.send_message(message.from_user.id, "Таааак... Кто-то отважился бросить вызов моему великому лабиринту☠")
     time.sleep(2)
     bot.send_message(message.from_user.id,"Если пройдешь до противоположного по диагонали угла тебя ждет награда")

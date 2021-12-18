@@ -10,14 +10,16 @@ pygame.display.set_caption("Maze example")
 clock = pygame.time.Clock()
 
 class Cell:
-
+    '''Класс определяющий клетку'''
     def __init__(self, x, y):
+        '''Конструктор - инициализатор класса выполняющий создание объекта и назначающий начальные значения полям класса Cell'''
         self.x = x
         self.y = y
         self.walls = {'top': True, 'right': True, 'bottom': True, 'left': True}
         self.visited = False
 
     def draw(self):
+        '''Отрисовывает перемещение игрока на поле лабиринта'''
         x = 2 * self.x * TILE
         y = 2 * self.y * TILE
         if self.visited:
@@ -32,11 +34,13 @@ class Cell:
             pygame.draw.rect(screen, pygame.Color('red'), (x - TILE, y, TILE, TILE))
 
     def check_cell(self, x, y):
+        '''Является промежуточной функцией и возвращает наличие ячейку сетки'''
         if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
             return False
         return grid_cell[x + y * cols]
 
     def check_neighbours(self):
+        '''Отвечает за проверку передвижения'''
         neighbours = []
         top = self.check_cell(self.x, self.y - 1)
         right = self.check_cell(self.x + 1, self.y)
@@ -53,6 +57,7 @@ class Cell:
         return choice(neighbours) if neighbours else False
 
 def remove_walls(current_cell, next_cell):
+    '''Отвечает за передвижение'''
     dx = current_cell.x - next_cell.x
     dy = current_cell.y - next_cell.y
     if dx == 1:
@@ -69,6 +74,7 @@ def remove_walls(current_cell, next_cell):
         next_cell.walls['top'] = False
 
 def check_wall(grid_cell, x, y):
+    '''Проверка на наличие стены в ближайшей клетке'''
     if x % 2 == 0 and y % 2 == 0:
         return False
     if x % 2 == 1 and y % 2 == 1:

@@ -1,9 +1,8 @@
 import sqlite3
 conn = sqlite3.connect('users.db', check_same_thread=False)
 cursor = conn.cursor()
-
 '''Данный модуль содержит методы для работы
-с базой данных. Позволяет хранит информацию о пользователях и получать необходимое им рассписание'''
+    с базой данных. Позволяет хранит информацию о пользователях и получать необходимое им рассписание'''
 
 def get_all():
     '''Для получения всех ID в бд'''
@@ -23,7 +22,9 @@ def get_user_id(user_id):
 def add_user(user_id, FIO):
     '''Добавление пользователя в бд'''
     cursor.execute("INSERT INTO `users` (`user_id`, `FIO`) VALUES (?, ?)", (user_id, FIO))
-    return conn.commit()
+    conn.commit()
+    cur = cursor.execute("SELECT * FROM users")
+    return len(cur.fetchall())
 
 def add_record(s, ID_):
     '''Добавление рассписание пользователя'''
@@ -53,7 +54,8 @@ def add_record(s, ID_):
 def output(user_id):
     '''Для вывода ФИО по id telegram аккаунта'''
     cursor.execute("SELECT FIO FROM users WHERE user_id = " + str(user_id))
-    return cursor.fetchall()[0]
+    cur = cursor.fetchall()[0]
+    return cur[0]
 
 def delete_(user_id):
     '''Для удаление данных определенного пользователя'''
