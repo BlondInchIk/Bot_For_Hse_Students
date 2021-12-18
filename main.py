@@ -1,7 +1,9 @@
 import telebot
+from telebot import types
 from db import user_exists, get_user_id, add_user, add_record
 import time
 from mg import get_map_cell
+from request_hse import rasp
 
 bot=telebot.TeleBot('5097289263:AAHGLV3QXx8CgK6U5JQEIjut7N67NDKCiL4')
 FIO = ''
@@ -23,19 +25,16 @@ def start(message):
 
 @bot.message_handler(commands = ["add"])
 def start(message):
-    bot.send_message(message.from_user.id, "Введите своё имя:")
-    bot.register_next_step_handler(message, FIO_)
-    if(not BotDB.user_exists(message.from_user.id)):
-        BotDB.add_user(message.from_user.id, cur)
+    if (not user_exists(message.from_user.id)):
+        bot.send_message(message.from_user.id, "Введите своё имя:")
+        bot.register_next_step_handler(message, FIO_)
     else:
         bot.send_message(message.from_user.id,"Пользователь уже есть в базе данных")
     # BotDB.add_record(message.from_user.id, operation, value)
-
 def FIO_(message):
     global FIO
     FIO = message.text
-    FIO_test(FIO)
-
+    FIO_test(message)
 def FIO_test(message):
     keyboard = types.InlineKeyboardMarkup()
     key_yes = types.InlineKeyboardButton(text='ДА', callback_data='yes')
@@ -43,19 +42,9 @@ def FIO_test(message):
     keyboard.add(key_yes, key_no)
     bot.send_message(message.chat.id,f"Твое ФИО - {FIO}?", reply_markup=keyboard)
 
-# @bot.callback_query_handler(func=lambda call: True)
-# def callback_worker(call):
-#     if call.data == "add":
-#         pass
-#     elif call.data == "not":
-#         pass
-#     elif call.data == "delete":
-#         pass
-#     elif call.data == "yes":
-#         add_(call.message.chat.id)
-#     elif call.data == "no":
-#         bot.send_message(call.message.chat.id, "Введите свое имя ещё раз:")
-#         bot.register_next_step_handler(call.message, FIO_)
+def add_(message):
+    add_user(message, FIO)
+    add_record(rasp(FIO), message)
 
 cols, rows = 8, 8
 
@@ -97,9 +86,19 @@ def play_message(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_func(query):
+    if query.data == "add":
+        pass
+    elif query.data == "not":
+        pass
+    elif query.data == "delete":
+        pass
+    elif query.data == "yes":
+        add_(query.message.chat.id)
+    elif query.data == "no":
+        bot.send_message(query.message.chat.id, "Введите свое ФИО ещё раз:")
+        bot.register_next_step_handler(query.message, FIO_)
     user_data = maps[query.message.chat.id]
     new_x, new_y = user_data['x'], user_data['y']
-
     if query.data == 'left':
         new_x -= 1
     if query.data == 'right':
@@ -108,7 +107,6 @@ def callback_func(query):
         new_y -= 1
     if query.data == 'down':
         new_y += 1
-
     if new_x < 0 or new_x > 2 * cols - 2 or new_y < 0 or new_y > rows * 2 - 2:
         return None
     if user_data['map'][new_x + new_y * (cols * 2 - 1)]:
@@ -126,4 +124,5 @@ def callback_func(query):
                            message_id=query.message.id,
                            text=get_map_str(user_data['map'], (new_x, new_y)),
                            reply_markup=keyboard )
+
 bot.infinity_polling()

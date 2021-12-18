@@ -1,10 +1,15 @@
 import requests
 import json
 from datetime import datetime
-from  main import FIO
+
+time_ = datetime.now()
+year = time_.year
+month = time_.month
+day = time_.day
 
 #Возвращает рассписание в виде json
-def rasp():
+def rasp(FIO):
+    print(FIO)
     ID = "https://ruz.hse.ru/api/search?term=" + FIO
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36 OPR/79.0.4143.50"}
 
@@ -27,7 +32,5 @@ def rasp():
     full_page = requests.post(raspisanie, headers=headers)
     full_page_str = str(full_page.content, 'utf8')
     string = json.loads(full_page_str)
-
-    if string == []:
-        return "Пользователь не найден!"
-    return string
+    print(string)
+    return string, cur_id
