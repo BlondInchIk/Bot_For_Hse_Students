@@ -9,7 +9,6 @@ day = time_.day
 
 #Возвращает рассписание в виде json
 def rasp(FIO):
-    print(FIO)
     ID = "https://ruz.hse.ru/api/search?term=" + FIO
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36 OPR/79.0.4143.50"}
 
@@ -32,5 +31,6 @@ def rasp(FIO):
     full_page = requests.post(raspisanie, headers=headers)
     full_page_str = str(full_page.content, 'utf8')
     string = json.loads(full_page_str)
-    print(string)
     return string
+
+print(rasp("Санников Владимир Алексеевич"))
