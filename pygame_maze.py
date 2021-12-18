@@ -8,12 +8,15 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maze example")
 clock = pygame.time.Clock()
+
 class Cell:
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.walls = {'top': True, 'right': True, 'bottom': True, 'left': True}
         self.visited = False
+
     def draw(self):
         x = 2 * self.x * TILE
         y = 2 * self.y * TILE
@@ -27,10 +30,12 @@ class Cell:
             pygame.draw.rect(screen, pygame.Color('red'), (x, y + TILE, TILE, TILE))
         if not self.walls['left']:
             pygame.draw.rect(screen, pygame.Color('red'), (x - TILE, y, TILE, TILE))
+
     def check_cell(self, x, y):
         if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
             return False
         return grid_cell[x + y * cols]
+
     def check_neighbours(self):
         neighbours = []
         top = self.check_cell(self.x, self.y - 1)
@@ -46,6 +51,7 @@ class Cell:
         if left and not left.visited:
             neighbours.append(left)
         return choice(neighbours) if neighbours else False
+
 def remove_walls(current_cell, next_cell):
     dx = current_cell.x - next_cell.x
     dy = current_cell.y - next_cell.y
@@ -61,6 +67,7 @@ def remove_walls(current_cell, next_cell):
     if dy == -1:
         current_cell.walls['bottom'] = False
         next_cell.walls['top'] = False
+
 def check_wall(grid_cell, x, y):
     if x % 2 == 0 and y % 2 == 0:
         return False
@@ -74,6 +81,7 @@ def check_wall(grid_cell, x, y):
         grid_x = (x - 1) // 2
         grid_y = y // 2
         return grid_cell[grid_x + grid_y * cols].walls['right']
+
 grid_cell = [Cell(x, y) for y in range(rows) for x in range(cols)]
 current_cell = grid_cell[0]
 current_cell.visited = True

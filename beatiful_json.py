@@ -1,9 +1,13 @@
 import json
 
 class Shedule:
+'''Данный класс используется для извлечения json-массива состоящего из описаний предметов
+(лекций, семинаров, прак. работ и т.д.)
+'''
     lstr_array = []
 
     def __init__ (self, string: str):
+        '''Конструктор - инициализатор класса выполняющий создание полей и назначающий начачльные значения полям класса Shedule'''
         self.lstr_array = json.loads(string)
 
     def get_lessons(self):
@@ -14,6 +18,7 @@ class Shedule:
         return result
 
     class Lesson(object):
+        '''Данный класс используется для хранения и вывода информации об одном предмете'''
         def __init__ (self, kindOfWork, date, discipline, lecturer,auditorium,
             lecturerEmail,
             beginLesson ,

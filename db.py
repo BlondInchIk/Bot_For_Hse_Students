@@ -2,28 +2,31 @@ import sqlite3
 conn = sqlite3.connect('users.db', check_same_thread=False)
 cursor = conn.cursor()
 
-'''Для получения всех ID в бд'''
+'''Данный модуль содержит методы для работы
+с базой данных. Позволяет хранит информацию о пользователях и получать необходимое им рассписание'''
+
 def get_all():
+    '''Для получения всех ID в бд'''
     result = cursor.execute("SELECT id FROM `users`")
     return result.fetchall()
 
-''''''
 def user_exists(user_id):
-    """Проверяем, есть ли юзер в базе"""
+    '''Для проверки наличия пользователя в бд'''
     result = cursor.execute("SELECT * FROM `users` WHERE `user_id` = ?", (user_id,))
     return bool(len(result.fetchall()))
 
 def get_user_id(user_id):
-    """Достаем id юзера в базе по его user_id"""
+    '''Для вывода всех данных пользователя'''
     result = cursor.execute("SELECT * FROM `users` WHERE `user_id` = ?", (user_id,))
     return len(result.fetchone())
 
 def add_user(user_id, FIO):
-    """Добавляем юзера в базу"""
+    '''Добавление пользователя в бд'''
     cursor.execute("INSERT INTO `users` (`user_id`, `FIO`) VALUES (?, ?)", (user_id, FIO))
     return conn.commit()
 
 def add_record(s, ID_):
+    '''Добавление рассписание пользователя'''
     for i in s:
         s2 = dict(i)
         para_date = str(s2.get("date"))
@@ -48,10 +51,12 @@ def add_record(s, ID_):
             conn.commit()
 
 def output(user_id):
+    '''Для вывода ФИО по id telegram аккаунта'''
     cursor.execute("SELECT FIO FROM users WHERE user_id = " + str(user_id))
     return cursor.fetchall()[0]
 
 def delete_(user_id):
+    '''Для удаление данных определенного пользователя'''
     cursor.execute("DELETE FROM users WHERE user_id = " + str((user_id)))
     conn.commit()
     cursor.execute("DELETE FROM records WHERE users_id = " + str((user_id)))
