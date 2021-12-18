@@ -27,17 +27,17 @@ def add_record(s, ID_):
         lecturer = str(s2.get("lecturer"))
         auditorium = str(s2.get("auditorium"))
         lecturerEmail = str(s2.get("lecturerEmail"))
-        beginLesson = str(s2.get("beginLesson"))
+        beginlesson = str(s2.get("beginLesson"))
         url1 = str(s2.get("url1"))
         url1_description = str(s2.get("url1_description"))
         para_id = str(s2.get("lessonOid"))
         cursor.execute("INSERT INTO `records` ("
                         "`users_id`, `para_date`, "
                         "`discipline`, `lecturer`, "
-                        "`auditorium`, `lectureremail`, "
+                        "`auditorium`, `lecturerEmail`, "
                         "`beginlesson`, `url1`, `url1_description`, "
-                        "`para_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        (ID_, para_date, discipline, lecturer, auditorium, lectureremail, beginlesson, url1, url1_description, para_id))
+                        "`para_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        (ID_, para_date, discipline, lecturer, auditorium, lecturerEmail, beginlesson, url1, url1_description, para_id))
         conn.commit()
 
 def close():

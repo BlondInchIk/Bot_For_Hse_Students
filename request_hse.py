@@ -25,7 +25,7 @@ def rasp(FIO):
         string2 = dict(i)
         if string2.get("id") != "":
             cur_id = string2.get("id")
-        break
+            break
 
     raspisanie = "https://ruz.hse.ru/api/schedule/student/" + str(cur_id) + "?start=" + str(year) + "." + str(month) + "." + str(day) + "&finish=" + str(year) + "." + str(month) + "." + str(day+7)
 
@@ -33,4 +33,4 @@ def rasp(FIO):
     full_page_str = str(full_page.content, 'utf8')
     string = json.loads(full_page_str)
     print(string)
-    return string, cur_id
+    return string

@@ -43,7 +43,7 @@ def FIO_test(message):
     bot.send_message(message.chat.id,f"Твое ФИО - {FIO}?", reply_markup=keyboard)
 
 def add_(message):
-    add_user(message, FIO)
+    # add_user(message, FIO)
     add_record(rasp(FIO), message)
 
 cols, rows = 8, 8
@@ -84,19 +84,22 @@ def play_message(message):
 
     bot.send_message(message.from_user.id, get_map_str(map_cell, (0, 0)), reply_markup=keyboard)
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_func(query):
-    if query.data == "add":
-        pass
-    elif query.data == "not":
-        pass
-    elif query.data == "delete":
-        pass
-    elif query.data == "yes":
+@bot.callback_query_handler(text="yes")
+def answer(query):
+    if query.data == "yes":
         add_(query.message.chat.id)
     elif query.data == "no":
         bot.send_message(query.message.chat.id, "Введите свое ФИО ещё раз:")
         bot.register_next_step_handler(query.message, FIO_)
+
+@bot.callback_query_handler(text="no")
+def answer(query):
+    elif query.data == "no":
+        bot.send_message(query.message.chat.id, "Введите свое ФИО ещё раз:")
+        bot.register_next_step_handler(query.message, FIO_)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_func(query):
     user_data = maps[query.message.chat.id]
     new_x, new_y = user_data['x'], user_data['y']
     if query.data == 'left':

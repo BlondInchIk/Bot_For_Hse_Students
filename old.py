@@ -74,7 +74,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS raspisanie(
 """)
 conn.commit()
 
-def db_add(s, id_):
+def db_add(s):
     count = 0
     print(s)
     # cur.execute("SELECT `user_id` FROM raspisanie WHERE `check_` = ?", (check__,))
@@ -93,7 +93,7 @@ def db_add(s, id_):
         url2_ = str(s2.get("url2"))
         url2_description_ = str(s2.get("url2_description"))
         check__ = str(s2.get("lessonOid"))
-
+        print(s2.get('date'))
         # cur.execute("SELECT `id__` FROM raspisanie WHERE `check_` = ?", (check__,))
         # cur1 = cur.fetchall()
         cur.execute("SELECT * FROM raspisanie WHERE `id__` = ?", (id_,))
@@ -105,7 +105,7 @@ def db_add(s, id_):
             cur.execute("INSERT INTO raspisanie VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", user)
             conn.commit()
         else:
-            cur.execute("SELECT `id__` FROM raspisanie WHERE `check_` = ? AND", (check__,))
+            cur.execute("SELECT `id__` FROM raspisanie WHERE `check_` = ?", (check__,))
             cur2 = cur.fetchall()
             user = (id_, date__, discipline_, lecturer_, auditorium_, lecturerEmail_, beginLesson_, url1_, url1_description_, url2_, url2_description_, check__)
             cur.execute("INSERT INTO raspisanie VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", user)
