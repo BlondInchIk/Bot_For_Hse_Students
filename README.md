@@ -1,6 +1,6 @@
 # Student Mate
 contributors: 
-Grandman2003,
+Gennadiy-Goykhman,
 BlondInchIk,
 Vladimir Sannikov
 
