@@ -1,11 +1,11 @@
 import requests
 import json
 from datetime import datetime
-from  import surname, name
+from  main import FIO
 
 #Возвращает рассписание в виде json
 def rasp():
-    ID = "https://ruz.hse.ru/api/search?term=" + surname + " " + name
+    ID = "https://ruz.hse.ru/api/search?term=" + FIO
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36 OPR/79.0.4143.50"}
 
     full_page = requests.post(ID, headers=headers)
