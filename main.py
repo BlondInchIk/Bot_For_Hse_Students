@@ -1,7 +1,7 @@
 import telebot
-from telebot import types
 from db import user_exists, get_user_id, add_user, add_record, delete_, output, get_all
 import time
+from anekdots import Anecdots
 from mg import get_map_cell
 from request_hse import rasp, rasp_cool
 
@@ -9,6 +9,7 @@ bot=telebot.TeleBot('5097289263:AAHGLV3QXx8CgK6U5JQEIjut7N67NDKCiL4')
 
 FIO = ''
 
+'''Данный модуль реализует основную функционнальность бота и пользовательского интерфейса в нём'''
 @bot.message_handler(commands = ["start"])
 def start(message):
     '''Используется для начала работы telegram bot'a и запуска вступительного текста'''
@@ -16,6 +17,7 @@ def start(message):
     user_markup.row("/add","/delete")
     user_markup.row("/play","/show")
     user_markup.row("/chat","/location")
+    user_markup.row("/joke")
     bot.send_message(message.from_user.id,'Привет, друг...')
     time.sleep(1)
     bot.send_message(message.from_user.id,'Привет,...друг?')
@@ -45,9 +47,16 @@ def output_(message):
     '''Реализует вывод рассписания определенного пользователя'''
     bot.send_message(message.from_user.id, rasp_cool(output(message.from_user.id)))
 
+@bot.message_handler(commands = ["joke"])
+def get_joke(message):
+    '''Предлагает пользователю случайный анекдот'''
+    anect = Anecdots()
+    bot.send_message(message.from_user.id, anect.get_anecdot())
+
 @bot.message_handler(commands = ["location"])
 def output_(message):
     '''Отправляет гео-метку по заданному местоположению'''
+
     bot.send_location(message.from_user.id, 55.803337, 37.410132)
 
 @bot.message_handler(commands = ["add"])
@@ -98,7 +107,7 @@ keyboard.row(telebot.types.InlineKeyboardButton("Сдаться", callback_data=
 maps = {}
 
 def get_map_str(map_cell, player):
-    '''Создает поле(лабиринт)'''
+    '''Создает поле(лабиринта'''
     map_str = ""
     for y in range(rows * 2 - 1):
         for x in range(cols * 2 - 1):
@@ -113,6 +122,7 @@ def get_map_str(map_cell, player):
 
 @bot.message_handler(commands=['anek'])
 def anonymous(message):
+    '''Создание анонимного чата для двух рандомных пользователей - в разработке'''
     all = []
     all.append(get_all())
     bot.send_message(message.chat.id, all)

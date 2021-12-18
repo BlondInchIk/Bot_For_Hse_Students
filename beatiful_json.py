@@ -34,9 +34,11 @@ class Shedule:
             self.url1 = url1
 
         def to_str(self):
+            '''Компанует данные полей клосса Lesson в описание данного предмета для вывода пользователю'''
             return str(self.date)+" 	     "+str(self.kindOfWork)+"\n"+str(self.discipline)+" - "+str(self.beginLesson)+"\n"+"\n"+"\n"+"Ауд. "+str(self.auditorium)+"\n"+"Преподаватель: "+str(self.lecturer)+"\n"+"\n"+"Сcылка: "+str(self.url1)+"\n\n" +"☝️🧐☝️🧐☝️🧐☝️🧐☝️🧐☝️🧐☝️🧐"+"\n\n"
 
     def lesson_decoder(self, obj):
+        '''Вытаскивает данные из полей json объекта и вставляет их в конструктор класса Lesson'''
         return self.Lesson(obj["kindOfWork"], obj["date"], obj["discipline"], obj["lecturer"],
                         obj["auditorium"], obj["lecturerEmail"],obj["beginLesson"],
                         obj["url1"])
