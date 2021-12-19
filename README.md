@@ -1,4 +1,4 @@
-# Student Mate
+# Student MR. BOT
 contributors: 
 Gennadiy-Goykhman,
 BlondInchIk,

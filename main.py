@@ -5,6 +5,8 @@ import time
 from anekdots import Anecdots
 from mg import get_map_cell
 from request_hse import rasp, rasp_cool
+from telebot import types
+from database import Database
 
 bot=telebot.TeleBot('5097289263:AAHGLV3QXx8CgK6U5JQEIjut7N67NDKCiL4')
 
@@ -63,15 +65,6 @@ def output_(message):
     bot.send_message(message.from_user.id, "Доступные здания вышки в этом боте:\n"
                                            "Мием, Шаболовка, Покровка, Мясницкая, Басманная, Ордынка,"
                                            " Одинцово, Дубки")
-
-@bot.message_handler(commands=['chat'])
-def anonymous(message):
-    '''Создание анонимного чата для двух рандомных пользователей - в разработке'''
-    # all = []
-    # all.append(get_all())
-    bot.send_message(message.chat.id, "Чата не будет, расходимся")
-
-
 
 @bot.message_handler(commands=['play'])
 def play_message(message):
@@ -177,6 +170,61 @@ def callback_func(query):
                            message_id=query.message.id,
                            text=get_map_str(user_data['map'], (new_x, new_y)),
                            reply_markup=keyboard )
+
+@bot.message_handler(commands = ['chat'])
+def start(message):
+    '''Запуск анонимного чата'''
+    markup = types.ReplyKeyboardMarkup(resize_keyboard = True)
+    item1 = types.KeyboardButton('Поиск')
+    markup.add(item1)
+
+    bot.send_message(message.chat.id, 'Привет, {0.first_name}! Добро пожаловать в анонимный чат! Нажми на поиск собеседника. '.format(message.from_user), reply_markup = markup)
+
+@bot.message_handler(commands = ['stop'])
+def stop(message):
+    '''Остановка анонимного чата'''
+    chat_info = db.get_active(message.chat.id)
+    if chat_info != False:
+        db.delete_chat(chat_info[0])
+        markup = types.ReplyKeyboardMarkup(resize_keyboard = True)
+        item1 = types.KeyboardButton('Поиск')
+        markup.add(item1)
+
+        bot.send_message(chat_info[1], 'Теперь вы наидене с вашими мыслями'.format(message.from_user), reply_markup = markup)
+        bot.send_message(message.chat.id, 'Вы вышли из чата'.format(message.from_user), reply_markup = markup)
+    else:
+        bot.send_message(message.chat.id, 'Вы не начали чат'.format(message.from_user), reply_markup = markup)
+
+@bot.message_handler(content_types = ['text'])
+def bot_message(message):
+    '''Запуск поиска собеседника для анонимного чата'''
+    if message.chat.type == 'private':
+        if message.text == "Поиск":
+            markup = types.ReplyKeyboardMarkup(resize_keyboard = True)
+            item1 = types.KeyboardButton("Stop")
+            markup.add(item1)
+
+            chat_two = db.get_chat()
+
+            if db.create_chat(message.chat.id, chat_two) == False:
+                db.add_queue(message.chat.id)
+                bot.send_message(message.chat.id, "Поиск", reply_markup = markup)
+            else:
+                mess = 'Собеседник найден! Чтобы выйти, напишите /stop'
+                markup = types.ReplyKeyboardMarkup(resize_keyboard = True)
+                item1 = types.KeyboardButton("Stop")
+                markup.add(item1)
+
+                bot.send_message(message.chat.id, mess, reply_markup = markup)
+                bot.send_message(chat_two, mess, reply_markup = markup)
+
+        elif message.text == "Stop":
+            db.delete_queue(message.chat.id)
+            bot.send_message(message.chat.id, "Поиск остановлен")
+
+        else:
+            chat_info = db.get_active_chat(message.chat.id)
+            bot.send_message(chat_info[1], message.text)
 
 @bot.message_handler(content_types='text')
 def message_reply(message):
