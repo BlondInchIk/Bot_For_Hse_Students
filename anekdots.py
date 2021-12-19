@@ -9,4 +9,4 @@ class Anecdots:
         self.texts=string["anecdots"]
     def get_anecdot(self):
         '''Возвращает случайный анекдот из предложенных'''
-        return self.texts[random.randrange(0,5)]
+        return self.texts[random.randrange(0,15)]

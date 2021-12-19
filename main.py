@@ -29,7 +29,9 @@ def start(message):
     time.sleep(1)
     bot.send_message(message.from_user.id,'То, что я расскажу - совершенно секретно. Существует заговор против всех нас. Могущественная группа людей тайно управляет всей Высшей Школой Экономики.')
     time.sleep(4)
-    bot.send_message(message.from_user.id,"Я помогу тебе в это нелегкое время \n\n Команды для управления моей силой: \n\n/add - вступить в мой клан\n/delete - дезертировать как трус -_-\n/play - правильное времяпрепровождение на парах по АиП\n/show - рассписание твоих будущих исспытаний\n/chat - сходка анонимных алкоголиков\n/location - координаты дома", reply_markup = user_markup)
+    bot.send_message(message.from_user.id,"Я помогу тебе в это нелегкое время \n\n Команды для управления моей силой: \n\n/add - вступить в мой клан\n/delete - дезертировать как трус -_-\n"
+                                          "/play - правильное времяпрепровождение на парах по АиП\n/show - рассписание твоих будущих испытаний\n/chat - сходка анонимных алкоголиков"
+                                          "\n/location - координаты домов\n/joke - если тебе грустно, тебе всегда помогут наши околоинтеллектуальные шутки", reply_markup = user_markup)
 
 @bot.message_handler(commands = ["delete"])
 def delete(message):
@@ -57,8 +59,34 @@ def get_joke(message):
 @bot.message_handler(commands = ["location"])
 def output_(message):
     '''Отправляет гео-метку по заданному местоположению'''
+    bot.send_photo(message.from_user.id, "https://cim.hse.ru/data/2017/04/07/1168289132/map-web-01.png")
+    bot.send_message(message.from_user.id, "Доступные здания вышки в этом боте:\n"
+                                           "Мием, Шаболовка, Покровка, Мясницкая, Басманная, Ордынка,"
+                                           " Одинцово, Дубки")
 
-    bot.send_location(message.from_user.id, 55.803337, 37.410132)
+@bot.message_handler(commands=['chat'])
+def anonymous(message):
+    '''Создание анонимного чата для двух рандомных пользователей - в разработке'''
+    # all = []
+    # all.append(get_all())
+    bot.send_message(message.chat.id, "Чата не будет, расходимся")
+
+
+
+@bot.message_handler(commands=['play'])
+def play_message(message):
+    '''Запускает игру - лабиринт'''
+    bot.send_message(message.from_user.id, "Таааак... Кто-то отважился бросить вызов моему великому лабиринту☠")
+    time.sleep(2)
+    bot.send_message(message.from_user.id,"Если пройдешь до противоположного по диагонали угла тебя ждет награда")
+    map_cell = get_map_cell(cols, rows)
+    user_data = {
+        'map': map_cell,
+        'x': 0,
+        'y': 0
+    }
+    maps[message.chat.id] = user_data
+    bot.send_message(message.from_user.id, get_map_str(map_cell, (0, 0)), reply_markup=keyboard)
 
 @bot.message_handler(commands = ["add"])
 def start(message):
@@ -121,28 +149,6 @@ def get_map_str(map_cell, player):
         map_str += "\n"
     return map_str
 
-@bot.message_handler(commands=['anek'])
-def anonymous(message):
-    '''Создание анонимного чата для двух рандомных пользователей - в разработке'''
-    all = []
-    all.append(get_all())
-    bot.send_message(message.chat.id, all)
-
-@bot.message_handler(commands=['play'])
-def play_message(message):
-    '''Запускает игру - лабиринт'''
-    bot.send_message(message.from_user.id, "Таааак... Кто-то отважился бросить вызов моему великому лабиринту☠")
-    time.sleep(2)
-    bot.send_message(message.from_user.id,"Если пройдешь до противоположного по диагонали угла тебя ждет награда")
-    map_cell = get_map_cell(cols, rows)
-    user_data = {
-        'map': map_cell,
-        'x': 0,
-        'y': 0
-    }
-    maps[message.chat.id] = user_data
-    bot.send_message(message.from_user.id, get_map_str(map_cell, (0, 0)), reply_markup=keyboard)
-
 @bot.callback_query_handler(func=lambda call: True)
 def callback_func(query):
     '''Реализует пользовательский интерфейс игры лабиринт'''
@@ -164,11 +170,32 @@ def callback_func(query):
     if new_x == cols * 2 - 2 and new_y == rows * 2 - 2:
         bot.edit_message_text( chat_id=query.message.chat.id,
                                message_id=query.message.id,
-                               text="Сongratulations\n+10 Social credits" )
+                               text="Сongratulations\n+15 Social credit" )
         bot.send_animation(query.message.chat.id, "https://c.tenor.com/RvBPEdvCqHkAAAAC/social-credit.gif")
         return None
     bot.edit_message_text( chat_id=query.message.chat.id,
                            message_id=query.message.id,
                            text=get_map_str(user_data['map'], (new_x, new_y)),
                            reply_markup=keyboard )
+
+@bot.message_handler(content_types='text')
+def message_reply(message):
+    '''Отправляет геолакацию на запрос пользователя'''
+    if message.text=="МИЕМ" or message.text=="Мием" or message.text=="мием" or message.text=="МЕМ":
+        bot.send_location(message.from_user.id, 55.803337, 37.410132)
+    if message.text == "Шаболовка" or message.text == "шаболовка":
+        bot.send_location(message.from_user.id, 55.720197, 37.608582)
+    if message.text == "Покровка" or message.text == "покровка" or message.text == "покровская":
+        bot.send_location(message.from_user.id, 55.754007, 37.648283)
+    if message.text == "Мясницкая" or message.text == "мясницкая":
+        bot.send_location(message.from_user.id, 55.761456, 37.633133)
+    if message.text == "Басманная" or message.text == "басманная" or message.text == "Басманая" or message.text == "Басманая":
+        bot.send_location(message.from_user.id, 55.766844, 37.663422)
+    if message.text == "Ордынка" or message.text == "ордынка":
+        bot.send_location(message.from_user.id, 55.737520, 37.626289)
+    if message.text == "Одинцово" or message.text == "одинцово":
+        bot.send_location(message.from_user.id, 55.669965, 37.279713)
+    if message.text == "Дубки" or message.text == "дубки":
+        bot.send_location(message.from_user.id, 55.660415, 37.228285)
+
 bot.infinity_polling()
