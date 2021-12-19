@@ -9,7 +9,7 @@ from telebot import types
 from database import Database
 
 bot=telebot.TeleBot('5097289263:AAHGLV3QXx8CgK6U5JQEIjut7N67NDKCiL4')
-
+db = Database('db.db')
 FIO = ''
 
 '''Данный модуль реализует основную функционнальность бота и пользовательского интерфейса в нём'''
@@ -222,13 +222,6 @@ def bot_message(message):
             db.delete_queue(message.chat.id)
             bot.send_message(message.chat.id, "Поиск остановлен")
 
-        else:
-            chat_info = db.get_active_chat(message.chat.id)
-            bot.send_message(chat_info[1], message.text)
-
-@bot.message_handler(content_types='text')
-def message_reply(message):
-    '''Отправляет геолакацию на запрос пользователя'''
     if message.text=="МИЕМ" or message.text=="Мием" or message.text=="мием" or message.text=="МЕМ":
         bot.send_location(message.from_user.id, 55.803337, 37.410132)
     if message.text == "Шаболовка" or message.text == "шаболовка":
