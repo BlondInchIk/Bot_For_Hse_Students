@@ -1,4 +1,5 @@
 import telebot
+from telebot import types
 from db import user_exists, get_user_id, add_user, add_record, delete_, output, get_all
 import time
 from anekdots import Anecdots
